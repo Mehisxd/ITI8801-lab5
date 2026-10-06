@@ -9,6 +9,8 @@ services:
     depends_on:
       service:
         condition: service_healthy
+    networks:
+      - frontend
 
   service:
     build:
@@ -32,6 +34,9 @@ services:
       interval: 10s
       timeout: 5s
       retries: 10
+    networks:
+      - frontend
+      - backend
 
   database:
     image: postgres:16-alpine
@@ -48,6 +53,13 @@ services:
       interval: 5s
       timeout: 5s
       retries: 10
+    networks:
+      - backend
 
 volumes:
   postgres-data:
+
+networks:
+  frontend:
+  backend:
+    internal: true
