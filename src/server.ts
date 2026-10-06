@@ -29,7 +29,11 @@ function toError(error: unknown): Error {
 }
 
 app.setErrorHandler((error, request, reply) => {
-  if (isValidationError(error)) {
+  const isBadRequest =
+    isValidationError(error) ||
+    (hasStatusCode(error) && error.statusCode === 400);
+
+  if (isBadRequest) {
     return reply.code(400).send({
       error: "Invalid request body",
     });
@@ -96,4 +100,15 @@ try {
 
   await database.end();
   process.exit(1);
+}
+
+function hasStatusCode(
+  error: unknown,
+): error is { statusCode: number } {
+  return (
+    typeof error === "object" &&
+    error !== null &&
+    "statusCode" in error &&
+    typeof error.statusCode === "number"
+  );
 }
