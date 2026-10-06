@@ -5,6 +5,11 @@ import { healthRoutes } from "./routes/health.js";
 
 const app = Fastify({
   logger: true,
+  ajv: {
+    customOptions: {
+      coerceTypes: false,
+    },
+  },
 });
 
 function isValidationError(
